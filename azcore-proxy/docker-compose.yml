@@ -1,0 +1,15 @@
+services:
+  ac-selfregister-proxy:
+    build: .
+    container_name: ac-selfregister-proxy
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3001:3001"
+    networks:
+      - ac-network
+
+networks:
+  ac-network:
+    external: true
+    name: ac-server_ac-network

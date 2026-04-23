@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WoW Private Server &mdash; Account Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: '#c8a96e',
+            'gold-light': '#e8c88e',
+          },
+          fontFamily: {
+            display: ['"Cinzel"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { background-color: #0c0e14; }
+    .bg-panel { background: linear-gradient(145deg, #161922, #1e2130); }
+    .border-gold { border-color: #c8a96e40; }
+    .divider { border-color: #c8a96e30; }
+    .input-field {
+      background: #0c0e14;
+      border: 1px solid #c8a96e30;
+      color: #e2e8f0;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: #c8a96e80;
+      box-shadow: 0 0 0 2px #c8a96e15;
+    }
+    .input-field::placeholder { color: #4a5568; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+
+  <div class="fixed inset-0 opacity-5 pointer-events-none"
+       style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23c8a96e\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+  </div>
+
+  <div class="relative w-full max-w-md">
+
+    <div class="text-center mb-8">
+      <h1 class="font-display text-4xl font-bold text-gold mb-2 tracking-wide drop-shadow-lg">
+        Account Portal
+      </h1>
+      <p class="text-slate-400 text-sm">Private WoW Realm &mdash; Members Only</p>
+    </div>
+
+    <!-- Discord identity badge -->
+    <div class="flex items-center gap-3 bg-slate-900/60 border border-slate-700/50 rounded-xl px-4 py-3 mb-4">
+      <% if (discord.avatar) { %>
+        <img src="https://cdn.discordapp.com/avatars/<%= discord.id %>/<%= discord.avatar %>.png?size=64"
+             class="w-10 h-10 rounded-full border border-slate-600" alt="Avatar" />
+      <% } else { %>
+        <div class="w-10 h-10 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center">
+          <span class="text-slate-400 font-bold text-sm"><%= discord.username[0].toUpperCase() %></span>
+        </div>
+      <% } %>
+      <div class="flex-1 min-w-0">
+        <p class="text-slate-200 text-sm font-medium truncate"><%= discord.username %></p>
+        <p class="text-slate-500 text-xs">Discord verified</p>
+      </div>
+      <a href="/auth/logout" class="text-slate-500 hover:text-slate-300 text-xs transition-colors whitespace-nowrap">
+        Sign out
+      </a>
+    </div>
+
+    <!-- Main card -->
+    <div class="bg-panel rounded-2xl border border-gold p-8 shadow-2xl shadow-black/60">
+
+      <% if (error) { %>
+      <div class="mb-5 flex items-start gap-3 bg-red-900/30 border border-red-700/50 rounded-lg px-4 py-3">
+        <svg class="w-5 h-5 text-red-400 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <p class="text-red-300 text-sm"><%= error %></p>
+      </div>
+      <% } %>
+
+      <% if (success) { %>
+      <div class="mb-5 flex items-start gap-3 bg-emerald-900/30 border border-emerald-700/50 rounded-lg px-4 py-3">
+        <svg class="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        <p class="text-emerald-300 text-sm"><%= success %></p>
+      </div>
+      <% } %>
+
+      <% if (!gameAccount) { %>
+      <!-- === CREATE ACCOUNT === -->
+      <div class="mb-6">
+        <div class="flex items-center gap-2 mb-1">
+          <h2 class="font-display text-xl text-slate-200">Create Game Account</h2>
+        </div>
+        <p class="text-slate-500 text-sm">Choose your in-game username and a secure password.</p>
+      </div>
+
+      <form method="POST" action="/account/register" class="space-y-4">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5" for="username">
+            Username <span class="text-slate-600">(3–16 characters, letters &amp; numbers only)</span>
+          </label>
+          <input type="text" id="username" name="username" required
+                 minlength="3" maxlength="16" pattern="[a-zA-Z0-9]+"
+                 class="input-field w-full rounded-lg px-4 py-2.5 text-sm"
+                 placeholder="YourHeroName" autocomplete="username" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5" for="password">
+            Password <span class="text-slate-600">(min 8 characters)</span>
+          </label>
+          <input type="password" id="password" name="password" required
+                 minlength="8" maxlength="72"
+                 class="input-field w-full rounded-lg px-4 py-2.5 text-sm"
+                 placeholder="••••••••" autocomplete="new-password" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5" for="password_confirm">
+            Confirm Password
+          </label>
+          <input type="password" id="password_confirm" name="password_confirm" required
+                 minlength="8" maxlength="72"
+                 class="input-field w-full rounded-lg px-4 py-2.5 text-sm"
+                 placeholder="••••••••" autocomplete="new-password" />
+        </div>
+
+        <button type="submit"
+                class="w-full mt-2 bg-gold hover:bg-gold-light text-slate-900 font-semibold py-3 rounded-xl transition-colors text-sm shadow-lg shadow-gold/10">
+          Create Account
+        </button>
+      </form>
+
+      <% } else { %>
+      <!-- === EXISTING ACCOUNT === -->
+      <div class="mb-6">
+        <h2 class="font-display text-xl text-slate-200 mb-1">Your Game Account</h2>
+        <div class="flex items-center gap-2 mt-3">
+          <span class="bg-emerald-900/40 border border-emerald-700/40 text-emerald-400 text-xs font-medium px-2.5 py-1 rounded-full">
+            Active
+          </span>
+          <span class="text-slate-300 font-mono text-sm"><%= gameAccount.username %></span>
+        </div>
+      </div>
+
+      <hr class="divider mb-6" />
+
+      <div class="mb-5">
+        <h3 class="text-slate-300 text-sm font-medium mb-1">Change Password</h3>
+        <p class="text-slate-500 text-xs">Changing your password will end any active game sessions.</p>
+      </div>
+
+      <form method="POST" action="/account/password" class="space-y-4">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5" for="password">
+            New Password <span class="text-slate-600">(min 8 characters)</span>
+          </label>
+          <input type="password" id="password" name="password" required
+                 minlength="8" maxlength="72"
+                 class="input-field w-full rounded-lg px-4 py-2.5 text-sm"
+                 placeholder="••••••••" autocomplete="new-password" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5" for="password_confirm">
+            Confirm New Password
+          </label>
+          <input type="password" id="password_confirm" name="password_confirm" required
+                 minlength="8" maxlength="72"
+                 class="input-field w-full rounded-lg px-4 py-2.5 text-sm"
+                 placeholder="••••••••" autocomplete="new-password" />
+        </div>
+
+        <button type="submit"
+                class="w-full mt-2 bg-gold hover:bg-gold-light text-slate-900 font-semibold py-3 rounded-xl transition-colors text-sm shadow-lg shadow-gold/10">
+          Update Password
+        </button>
+      </form>
+      <% } %>
+
+      <% if (downloadUrl) { %>
+      <hr class="divider mt-6 mb-5" />
+      <a href="<%= downloadUrl %>"
+         class="flex items-center justify-center gap-2 text-gold hover:text-gold-light text-sm font-medium transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        Download Pre-configured Client
+      </a>
+      <% if (downloadPassword) { %>
+      <p class="text-center text-slate-500 text-xs mt-2">
+        Download password: <span class="font-mono text-slate-300"><%= downloadPassword %></span>
+      </p>
+      <% } %>
+      <% } %>
+
+    </div>
+
+    <!-- === CHARACTERS === -->
+    <% if (gameAccount && characters.length > 0) { %>
+    <div class="bg-panel rounded-2xl border border-gold mt-4 p-8 shadow-2xl shadow-black/60">
+      <h2 class="font-display text-xl text-slate-200 mb-5">Your Characters</h2>
+      <div class="space-y-3">
+        <% characters.forEach(function(char) { %>
+        <div class="flex items-center gap-4 rounded-xl px-4 py-3 bg-slate-900/60 border
+             <%= char.race.faction === 'alliance' ? 'border-l-4 border-l-blue-500 border-slate-700/40' : 'border-l-4 border-l-red-500 border-slate-700/40' %>">
+
+          <!-- Level badge -->
+          <div class="shrink-0 w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+            <span class="text-gold font-display font-bold text-sm"><%= char.level %></span>
+          </div>
+
+          <!-- Name + race/class -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-slate-200 font-medium text-sm truncate"><%= char.name %></span>
+              <% if (char.online) { %>
+              <span class="inline-flex items-center gap-1 text-emerald-400 text-xs">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                Online
+              </span>
+              <% } %>
+            </div>
+            <p class="text-slate-500 text-xs truncate"><%= char.race.name %> <%= char.class %></p>
+          </div>
+
+          <!-- Zone -->
+          <div class="text-right shrink-0 hidden sm:block">
+            <p class="text-slate-400 text-xs"><%= char.zone %></p>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+
+  </div>
+
+</body>
+</html>

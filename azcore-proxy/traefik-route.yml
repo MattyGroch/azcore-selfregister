@@ -1,0 +1,14 @@
+http:
+  routers:
+    ac-selfregister-proxy:
+      rule: "Host(`ac-proxy.yourdomain.com`)"
+      entryPoints:
+        - websecure
+      service: ac-selfregister-proxy
+      tls: {}
+
+  services:
+    ac-selfregister-proxy:
+      loadBalancer:
+        servers:
+          - url: "http://AZCORE_VM_IP:3001"

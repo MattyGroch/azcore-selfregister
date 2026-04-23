@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Error &mdash; Account Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { background-color: #0c0e14; font-family: 'Cinzel', Georgia, serif; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4">
+  <div class="text-center">
+    <h1 class="text-4xl font-bold text-red-400 mb-4">Something went wrong</h1>
+    <p class="text-slate-400 mb-6"><%= message %></p>
+    <a href="/" class="text-amber-400 hover:text-amber-300 text-sm underline">Return to portal</a>
+  </div>
+</body>
+</html>

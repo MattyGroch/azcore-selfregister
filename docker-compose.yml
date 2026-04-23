@@ -1,0 +1,33 @@
+services:
+  selfregister:
+    build: .
+    container_name: selfregister
+    restart: unless-stopped
+    environment:
+      - SESSION_SECRET=${SESSION_SECRET}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - DISCORD_REDIRECT_URI=${DISCORD_REDIRECT_URI}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
+      - PROXY_URL=${PROXY_URL}
+      - PROXY_API_KEY=${PROXY_API_KEY}
+      - CLIENT_DOWNLOAD_URL=${CLIENT_DOWNLOAD_URL}
+      - CLIENT_DOWNLOAD_PASSWORD=${CLIENT_DOWNLOAD_PASSWORD}
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - sessions:/app/sessions
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.selfregister.entrypoints=websecure"
+      - "traefik.http.routers.selfregister.rule=Host(`${PORTAL_HOST}`)"
+      - "traefik.http.services.selfregister.loadbalancer.server.port=3000"
+
+volumes:
+  sessions:
+
+networks:
+  proxy:
+    external: true
